@@ -25,7 +25,7 @@ void Logger::log(std::string msg)
         std::cout << "[INFO]";
         break;
     case ERROR:
-        std::cout << "[ERRIR]";
+        std::cout << "[ERROR]";
         break;
     case FATAL:
         std::cout << "[FATAL]";
