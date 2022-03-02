@@ -11,6 +11,7 @@ EventLoopThread::EventLoopThread(const ThreadInitCallback &cb,
     , callback_(cb)
 {
 }
+
 EventLoopThread::~EventLoopThread()
 {
     exiting_ = true;
@@ -23,7 +24,7 @@ EventLoopThread::~EventLoopThread()
 
 EventLoop *EventLoopThread::startLoop()
 {
-    thread_.start();    // 启用底层线程Thread类对象thread_中通过start()创建的线程
+    thread_.start(); // 启用底层线程Thread类对象thread_中通过start()创建的线程
 
     EventLoop *loop = nullptr;
     {

@@ -21,7 +21,7 @@ public:
     Channel(EventLoop *loop, int fd);
     ~Channel();
 
-    // fd得到Poller通知以后 处理事件
+    // fd得到Poller通知以后 处理事件 handleEvent在EventLoop::loop()中调用
     void handleEvent(Timestamp receiveTime);
 
     // 设置回调函数对象

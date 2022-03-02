@@ -7,7 +7,7 @@
 /**
  * 从fd上读取数据 Poller工作在LT模式
  * Buffer缓冲区是有大小的！ 但是从fd上读取数据的时候 却不知道tcp数据的最终大小
- * 
+ *
  * @description: 从socket读到缓冲区的方法是使用readv先读至buffer_，
  * Buffer_空间如果不够会读入到栈上65536个字节大小的空间，然后以append的
  * 方式追加入buffer_。既考虑了避免系统调用带来开销，又不影响数据的接收。
@@ -23,10 +23,10 @@ ssize_t Buffer::readFd(int fd, int *saveErrno)
         size_t iov_len; // iov_len在各种情况下分别确定了接收的最大长度以及实际写入的长度
     };
     */
-    
+
     // 使用iovec分配两个连续的缓冲区
     struct iovec vec[2];
-    const size_t writable = writableBytes();    // 这是Buffer底层缓冲区剩余的可写空间大小 不一定能完全存储从fd读出的数据
+    const size_t writable = writableBytes(); // 这是Buffer底层缓冲区剩余的可写空间大小 不一定能完全存储从fd读出的数据
 
     // 第一块缓冲区，指向可写空间
     vec[0].iov_base = begin() + writerIndex_;
@@ -50,7 +50,7 @@ ssize_t Buffer::readFd(int fd, int *saveErrno)
     {
         writerIndex_ += n;
     }
-    else    // extrabuf里面也写入了n-writable长度的数据
+    else // extrabuf里面也写入了n-writable长度的数据
     {
         writerIndex_ = buffer_.size();
         append(extrabuf, n - writable); // 对buffer_扩容 并将extrabuf存储的另一部分数据追加至buffer_

@@ -29,9 +29,9 @@ public:
     {
         if (len < readableBytes())
         {
-            readerIndex_ += len;    // 说明应用只读取了可读缓冲区数据的一部分，就是len长度 还剩下readerIndex+=len到writerIndex_的数据未读
+            readerIndex_ += len; // 说明应用只读取了可读缓冲区数据的一部分，就是len长度 还剩下readerIndex+=len到writerIndex_的数据未读
         }
-        else    // len == readableBytes()
+        else // len == readableBytes()
         {
             retrieveAll();
         }
@@ -47,7 +47,7 @@ public:
     std::string retrieveAsString(size_t len)
     {
         std::string result(peek(), len);
-        retrieve(len);  // 上面一句把缓冲区中可读的数据已经读取出来 这里肯定要对缓冲区进行复位操作
+        retrieve(len); // 上面一句把缓冲区中可读的数据已经读取出来 这里肯定要对缓冲区进行复位操作
         return result;
     }
 
@@ -64,7 +64,7 @@ public:
     void append(const char *data, size_t len)
     {
         ensureWritableBytes(len);
-        std::copy(data, data+len, beginWrite());
+        std::copy(data, data + len, beginWrite());
         writerIndex_ += len;
     }
     char *beginWrite() { return begin() + writerIndex_; }
@@ -90,13 +90,13 @@ private:
         {
             buffer_.resize(writerIndex_ + len);
         }
-        else    // 这里说明 len <= xxx + writer 把reader搬到从xxx开始 使得xxx后面是一段连续空间
+        else // 这里说明 len <= xxx + writer 把reader搬到从xxx开始 使得xxx后面是一段连续空间
         {
-            size_t readable = readableBytes();  // readable = reader的长度
-            std::copy(begin()+readerIndex_, begin()+writerIndex_,   // 把这一部分数据拷贝到begin+kCheapPrepend起始处
-                      begin()+kCheapPrepend);
+            size_t readable = readableBytes();                        // readable = reader的长度
+            std::copy(begin() + readerIndex_, begin() + writerIndex_, // 把这一部分数据拷贝到begin+kCheapPrepend起始处
+                      begin() + kCheapPrepend);
             readerIndex_ = kCheapPrepend;
-            writerIndex_ = readerIndex_+readable;
+            writerIndex_ = readerIndex_ + readable;
         }
     }
 

@@ -13,7 +13,7 @@ const int kDeleted = 2; // 某个channel已经从Poller删除
 EPollPoller::EPollPoller(EventLoop *loop)
     : Poller(loop)
     , epollfd_(epoll_create1(EPOLL_CLOEXEC))
-    , events_(kInitEventListSize)   // vector<epoll_event>(16)
+    , events_(kInitEventListSize) // vector<epoll_event>(16)
 {
     if (epollfd_ < 0)
     {
@@ -25,7 +25,6 @@ EPollPoller::~EPollPoller()
 {
     ::close(epollfd_);
 }
-
 
 Timestamp EPollPoller::poll(int timeoutMs, ChannelList *activeChannels)
 {
@@ -40,7 +39,7 @@ Timestamp EPollPoller::poll(int timeoutMs, ChannelList *activeChannels)
     {
         LOG_INFO("%d events happend\n", numEvents); // LOG_DEBUG最合理
         fillActiveChannels(numEvents, activeChannels);
-        if (numEvents == events_.size())    // 扩容操作
+        if (numEvents == events_.size()) // 扩容操作
         {
             events_.resize(events_.size() * 2);
         }
@@ -73,13 +72,13 @@ void EPollPoller::updateChannel(Channel *channel)
             int fd = channel->fd();
             channels_[fd] = channel;
         }
-        else    // index == kDeleted
+        else // index == kDeleted
         {
         }
         channel->set_index(kAdded);
         update(EPOLL_CTL_ADD, channel);
     }
-    else    // channel已经在Poller中注册过了
+    else // channel已经在Poller中注册过了
     {
         int fd = channel->fd();
         if (channel->isNoneEvent())

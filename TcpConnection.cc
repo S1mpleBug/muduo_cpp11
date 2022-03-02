@@ -34,7 +34,7 @@ TcpConnection::TcpConnection(EventLoop *loop,
     , channel_(new Channel(loop, sockfd))
     , localAddr_(localAddr)
     , peerAddr_(peerAddr)
-    , highWaterMark_(64*1024*1024)  // 64M
+    , highWaterMark_(64 * 1024 * 1024) // 64M
 {
     // 下面给channel设置相应的回调函数 poller给channel通知感兴趣的事件发生了 channel会回调相应的回调函数
     channel_->setReadCallback(
@@ -59,13 +59,14 @@ void TcpConnection::send(const std::string &buf)
 {
     if (state_ == kConnected)
     {
-        if (loop_->isInLoopThread())    // 这种是对于单个reactor的情况 用户调用conn->send时 loop_即为当前线程
+        if (loop_->isInLoopThread()) // 这种是对于单个reactor的情况 用户调用conn->send时 loop_即为当前线程
         {
             sendInLoop(buf.c_str(), buf.size());
         }
         else
         {
-            loop_->runInLoop(std::bind(&TcpConnection::sendInLoop, this, buf.c_str(), buf.size()));
+            loop_->runInLoop(
+                std::bind(&TcpConnection::sendInLoop, this, buf.c_str(), buf.size()));
         }
     }
 }
@@ -83,7 +84,7 @@ void TcpConnection::sendInLoop(const void *data, size_t len)
     {
         LOG_ERROR("disconnected, give up writing");
     }
-    
+
     // 表示channel_第一次开始写数据或者缓冲区没有待发送数据
     if (!channel_->isWriting() && outputBuffer_.readableBytes() == 0)
     {
@@ -94,16 +95,17 @@ void TcpConnection::sendInLoop(const void *data, size_t len)
             if (remaining == 0 && writeCompleteCallback_)
             {
                 // 既然在这里数据全部发送完成，就不用再给channel设置epollout事件了
-                loop_->queueInLoop(std::bind(writeCompleteCallback_, shared_from_this()));
+                loop_->queueInLoop(
+                    std::bind(writeCompleteCallback_, shared_from_this()));
             }
         }
-        else    // nwrote < 0
+        else // nwrote < 0
         {
             nwrote = 0;
-            if (errno != EWOULDBLOCK)   // EWOULDBLOCK表示非阻塞情况下没有数据后的正常返回 等同于EAGAIN
+            if (errno != EWOULDBLOCK) // EWOULDBLOCK表示非阻塞情况下没有数据后的正常返回 等同于EAGAIN
             {
                 LOG_ERROR("TcpConnection::sendInLoop");
-                if (errno == EPIPE || errno == ECONNRESET)  // SIGPIPE RESET
+                if (errno == EPIPE || errno == ECONNRESET) // SIGPIPE RESET
                 {
                     faultError = true;
                 }
@@ -121,16 +123,15 @@ void TcpConnection::sendInLoop(const void *data, size_t len)
     {
         // 目前发送缓冲区剩余的待发送的数据的长度
         size_t oldLen = outputBuffer_.readableBytes();
-        if (oldLen + remaining >= highWaterMark_
-            && oldLen < highWaterMark_
-            && highWaterMarkCallback_)
+        if (oldLen + remaining >= highWaterMark_ && oldLen < highWaterMark_ && highWaterMarkCallback_)
         {
-            loop_->queueInLoop(std::bind(highWaterMarkCallback_, shared_from_this(), oldLen+remaining));
+            loop_->queueInLoop(
+                std::bind(highWaterMarkCallback_, shared_from_this(), oldLen + remaining));
         }
         outputBuffer_.append((char *)data + nwrote, remaining);
         if (!channel_->isWriting())
         {
-            channel_->enableWriting();  // 这里一定要注册channel的写事件 否则poller不会给channel通知epollout
+            channel_->enableWriting(); // 这里一定要注册channel的写事件 否则poller不会给channel通知epollout
         }
     }
 }
@@ -140,7 +141,8 @@ void TcpConnection::shutdown()
     if (state_ == kConnected)
     {
         setState(kDisconnecting);
-        loop_->runInLoop(std::bind(&TcpConnection::shutdownInLoop, this));
+        loop_->runInLoop(
+            std::bind(&TcpConnection::shutdownInLoop, this));
     }
 }
 
@@ -157,12 +159,11 @@ void TcpConnection::connectEstablished()
 {
     setState(kConnected);
     channel_->tie(shared_from_this());
-    channel_->enableReading();  // 向poller注册channel的EPOLLIN读事件
+    channel_->enableReading(); // 向poller注册channel的EPOLLIN读事件
 
     // 新连接建立 执行回调
     connectionCallback_(shared_from_this());
 }
-
 // 连接销毁
 void TcpConnection::connectDestroyed()
 {
@@ -213,12 +214,11 @@ void TcpConnection::handleWrite()
                 {
                     // TcpConnection对象在其所在的subloop中 向pendingFunctors_中加入回调
                     loop_->queueInLoop(
-                        std::bind(writeCompleteCallback_, shared_from_this())
-                    );
+                        std::bind(writeCompleteCallback_, shared_from_this()));
                 }
                 if (state_ == kDisconnecting)
                 {
-                    shutdownInLoop();   // 在当前所属的loop中把TcpConnection删除掉
+                    shutdownInLoop(); // 在当前所属的loop中把TcpConnection删除掉
                 }
             }
         }
@@ -240,8 +240,8 @@ void TcpConnection::handleClose()
     channel_->disableAll();
 
     TcpConnectionPtr connPtr(shared_from_this());
-    connectionCallback_(connPtr);   // 执行连接关闭的回调
-    closeCallback_(connPtr);    // 执行关闭连接的回调 执行的是TcpServer::removeConnection回调方法   // must be the last line
+    connectionCallback_(connPtr); // 执行连接关闭的回调
+    closeCallback_(connPtr);      // 执行关闭连接的回调 执行的是TcpServer::removeConnection回调方法   // must be the last line
 }
 
 void TcpConnection::handleError()

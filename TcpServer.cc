@@ -104,6 +104,7 @@ void TcpServer::removeConnection(const TcpConnectionPtr &conn)
 {
     loop_->runInLoop(std::bind(&TcpServer::removeConnectionInLoop, this, conn));
 }
+
 void TcpServer::removeConnectionInLoop(const TcpConnectionPtr &conn)
 {
     LOG_INFO("TcpServer::removeConnectionInLoop [%s] - connection %s\n",
