@@ -1,10 +1,16 @@
 ## C++11 Muduo
 
-## 项目环境
+## 开发环境
 
+* linux kernel version 4.4.0 (ubuntu 16.04 Server)
 * gcc version 5.4.0
+* cmake version 3.5.1
 
-项目编译执行`./build.sh`即可，头文件生成至目录`/usr/include/mymuduo/`，`.so`库文件生成至目录`/usr/lib/`。
+项目编译执行`./build.sh`即可
+
+## 功能介绍
+
+头文件生成至目录`/usr/include/mymuduo/`，`.so`库文件生成至目录`/usr/lib/`。
 
 1. `EventLoop.*`、`Channel.*`、`Poller.*`、`EPollPoller.*`等主要用于事件轮询检测，并实现了事件分发处理的底层实现方法。`EventLoop`负责轮询执行`Poller`，要进行读、写、错误、关闭等事件时需执行哪些回调函数，均绑定至`Channel`中，只需从中调用即可，事件发生后进行相应的回调处理即可
 2. `Thread.*`、`EventLoopThread.*`、`EventLoopThreadPool.*`等将线程和`EventLoop`事件轮询绑定在一起，实现真正意义上的`one loop per thread`
