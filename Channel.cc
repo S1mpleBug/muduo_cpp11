@@ -19,7 +19,9 @@ Channel::Channel(EventLoop *loop, int fd)
 {
 }
 
-Channel::~Channel() {}
+Channel::~Channel()
+{
+}
 
 // channel的tie方法什么时候调用过?  TcpConnection => channel
 /**
@@ -80,7 +82,10 @@ void Channel::handleEventWithGuard(Timestamp receiveTime)
     // 错误
     if (revents_ & EPOLLERR)
     {
-        errorCallback_();
+        if (errorCallback_)
+        {
+            errorCallback_();
+        }
     }
     // 读
     if (revents_ & (EPOLLIN | EPOLLPRI))

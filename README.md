@@ -6,7 +6,7 @@
 * gcc version 5.4.0
 * cmake version 3.5.1
 
-项目编译执行`./build.sh`即可
+项目编译执行`./build.sh`即可，测试用例进入`example/`文件夹，`make`即可生成服务器测试用例
 
 ## 功能介绍
 

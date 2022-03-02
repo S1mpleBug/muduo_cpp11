@@ -3,6 +3,7 @@
 #include <sys/socket.h>
 #include <string.h>
 #include <netinet/tcp.h>
+#include <sys/socket.h>
 
 #include "Socket.h"
 #include "Logger.h"
@@ -33,7 +34,7 @@ int Socket::accept(InetAddress *peeraddr)
 {
     sockaddr_in addr;
     socklen_t len;
-    ::memset(&addr, 0, sizeof addr);
+    ::memset(&addr, 0, sizeof(addr));
     int connfd = ::accept(sockfd_, (sockaddr *)&addr, &len);
     if (connfd >= 0)
     {
@@ -53,20 +54,20 @@ void Socket::shutdownWrite()
 void Socket::setTcpNoDelay(bool on)
 {
     int optval = on ? 1 : 0;
-    ::setsockopt(sockfd_, IPPROTO_TCP, TCP_NODELAY, &optval, sizeof optval); // TCP_NODELAY包含头文件 <netinet/tcp.h>
+    ::setsockopt(sockfd_, IPPROTO_TCP, TCP_NODELAY, &optval, sizeof(optval)); // TCP_NODELAY包含头文件 <netinet/tcp.h>
 }
 void Socket::setReuseAddr(bool on)
 {
     int optval = on ? 1 : 0;
-    ::setsockopt(sockfd_, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof optval); // TCP_NODELAY包含头文件 <netinet/tcp.h>
+    ::setsockopt(sockfd_, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(optval)); // TCP_NODELAY包含头文件 <netinet/tcp.h>
 }
 void Socket::setReusePort(bool on)
 {
     int optval = on ? 1 : 0;
-    ::setsockopt(sockfd_, SOL_SOCKET, SO_REUSEPORT, &optval, sizeof optval); // TCP_NODELAY包含头文件 <netinet/tcp.h>
+    ::setsockopt(sockfd_, SOL_SOCKET, SO_REUSEPORT, &optval, sizeof(optval)); // TCP_NODELAY包含头文件 <netinet/tcp.h>
 }
 void Socket::setKeepAlive(bool on)
 {
     int optval = on ? 1 : 0;
-    ::setsockopt(sockfd_, SOL_SOCKET, SO_KEEPALIVE, &optval, sizeof optval); // TCP_NODELAY包含头文件 <netinet/tcp.h>
+    ::setsockopt(sockfd_, SOL_SOCKET, SO_KEEPALIVE, &optval, sizeof(optval)); // TCP_NODELAY包含头文件 <netinet/tcp.h>
 }

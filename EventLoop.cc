@@ -42,7 +42,8 @@ int createEventfd()
 }
 
 EventLoop::EventLoop()
-    : looping_(false), quit_(false)
+    : looping_(false)
+    , quit_(false)
     , callingPendingFunctors_(false)
     , threadId_(CurrentThread::tid())
     , poller_(Poller::newDefaultPoller(this))
@@ -98,6 +99,7 @@ void EventLoop::loop()
         doPendingFunctors();
     }
     LOG_INFO("EventLoop %p stop looping.\n", this);
+    looping_ = false;
 }
 
 /**
@@ -155,10 +157,10 @@ void EventLoop::queueInLoop(Functor cb)
 void EventLoop::handleRead()
 {
     uint64_t one = 1;
-    ssize_t n = read(wakeupFd_, &one, sizeof one);
-    if (n != sizeof one)
+    ssize_t n = read(wakeupFd_, &one, sizeof(one));
+    if (n != sizeof(one))
     {
-        LOG_ERROR("EventLoop::handleRead() reads %lu bytes instead of 8", n);
+        LOG_ERROR("EventLoop::handleRead() reads %lu bytes instead of 8\n", n);
     }
 }
 
@@ -166,8 +168,8 @@ void EventLoop::handleRead()
 void EventLoop::wakeup()
 {
     uint64_t one = 1;
-    ssize_t n = write(wakeupFd_, &one, sizeof one);
-    if (n != sizeof one)
+    ssize_t n = write(wakeupFd_, &one, sizeof(one));
+    if (n != sizeof(one))
     {
         LOG_ERROR("EventLoop::wakeup() writes %lu bytes instead of 8\n", n);
     }

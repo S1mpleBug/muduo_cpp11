@@ -12,7 +12,7 @@ const int kDeleted = 2; // 某个channel已经从Poller删除
 
 EPollPoller::EPollPoller(EventLoop *loop)
     : Poller(loop)
-    , epollfd_(epoll_create1(EPOLL_CLOEXEC))
+    , epollfd_(::epoll_create1(EPOLL_CLOEXEC))
     , events_(kInitEventListSize) // vector<epoll_event>(16)
 {
     if (epollfd_ < 0)
@@ -72,7 +72,7 @@ void EPollPoller::updateChannel(Channel *channel)
             int fd = channel->fd();
             channels_[fd] = channel;
         }
-        else // index == kDeleted
+        else // index == kAdd
         {
         }
         channel->set_index(kAdded);
@@ -124,13 +124,13 @@ void EPollPoller::fillActiveChannels(int numEvents, ChannelList *activeChannels)
 void EPollPoller::update(int operation, Channel *channel)
 {
     epoll_event event;
-    ::memset(&event, 0, sizeof event);
+    ::memset(&event, 0, sizeof(event));
 
     int fd = channel->fd();
 
     event.events = channel->events();
-    event.data.ptr = channel;
     event.data.fd = fd;
+    event.data.ptr = channel;
 
     if (::epoll_ctl(epollfd_, operation, fd, &event) < 0)
     {

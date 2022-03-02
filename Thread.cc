@@ -29,7 +29,7 @@ void Thread::start()                                                        // �
     sem_t sem;
     sem_init(&sem, false, 0);                                               // false指的是 不设置进程间共享
     // 开启线程
-    thread_ = std::shared_ptr<std::thread>(new std::thread([&]()->void {
+    thread_ = std::shared_ptr<std::thread>(new std::thread([&]() {
         tid_ = CurrentThread::tid();                                        // 获取线程的tid值
         sem_post(&sem);
         func_();                                                            // 开启一个新线程 专门执行该线程函数

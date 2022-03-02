@@ -44,6 +44,7 @@ public:
 
     // 判断EventLoop对象是否在自己的线程里
     bool isInLoopThread() const { return threadId_ == CurrentThread::tid(); } // threadId_为EventLoop创建时的线程id CurrentThread::tid()为当前线程id
+
 private:
     void handleRead();        // 给eventfd返回的文件描述符wakeupFd_绑定的事件回调 当wakeup()时 即有事件发生时 调用handleRead()读wakeupFd_的8字节 同时唤醒阻塞的epoll_wait
     void doPendingFunctors(); // 执行上层回调

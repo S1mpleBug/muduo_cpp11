@@ -64,7 +64,7 @@ public:
     void append(const char *data, size_t len)
     {
         ensureWritableBytes(len);
-        std::copy(data, data + len, beginWrite());
+        std::copy(data, data+len, beginWrite());
         writerIndex_ += len;
     }
     char *beginWrite() { return begin() + writerIndex_; }
@@ -83,7 +83,7 @@ private:
     void makeSpace(size_t len)
     {
         /**
-         * | kCheapPrepend |xxx|reader   | writer |                  // xxx标示reader中已读的部分
+         * | kCheapPrepend |xxx|reader   | writer |                     // xxx标示reader中已读的部分
          * | kCheapPrepend |            len            |
          **/
         if (writableBytes() + prependableBytes() < len + kCheapPrepend) // 也就是说 len > xxx + writer的部分
@@ -92,8 +92,9 @@ private:
         }
         else // 这里说明 len <= xxx + writer 把reader搬到从xxx开始 使得xxx后面是一段连续空间
         {
-            size_t readable = readableBytes();                        // readable = reader的长度
-            std::copy(begin() + readerIndex_, begin() + writerIndex_, // 把这一部分数据拷贝到begin+kCheapPrepend起始处
+            size_t readable = readableBytes(); // readable = reader的长度
+            std::copy(begin() + readerIndex_,
+                      begin() + writerIndex_,  // 把这一部分数据拷贝到begin+kCheapPrepend起始处
                       begin() + kCheapPrepend);
             readerIndex_ = kCheapPrepend;
             writerIndex_ = readerIndex_ + readable;

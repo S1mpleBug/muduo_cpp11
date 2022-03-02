@@ -26,6 +26,7 @@ TcpServer::TcpServer(EventLoop *loop,
     , connectionCallback_()
     , messageCallback_()
     , nextConnId_(1)
+    , started_(0)
 {
     // 当有新用户连接时，Acceptor类中绑定的acceptChannel_会有读事件发生，执行handleRead()调用TcpServer::newConnection回调
     acceptor_->setNewConnectionCallback(
@@ -38,6 +39,7 @@ TcpServer::~TcpServer()
     {
         TcpConnectionPtr conn(item.second);
         item.second.reset();    // 把原始的智能指针复位 让栈空间的TcpConnectionPtr conn指向该对象 当conn出了其作用域 即可释放智能指针指向的对象
+        // 销毁连接
         conn->getLoop()->runInLoop(
             std::bind(&TcpConnection::connectDestroyed, conn));
     }
@@ -74,8 +76,8 @@ void TcpServer::newConnection(int sockfd, const InetAddress &peerAddr)
     
     // 通过sockfd获取其绑定的本机的ip地址和端口信息
     sockaddr_in local;
-    ::memset(&local, 0, sizeof local);
-    socklen_t addrlen = sizeof local;
+    ::memset(&local, 0, sizeof(local));
+    socklen_t addrlen = sizeof(local);
     if(::getsockname(sockfd, (sockaddr *)&local, &addrlen) < 0)
     {
         LOG_ERROR("sockets::getLocalAddr");
@@ -97,12 +99,14 @@ void TcpServer::newConnection(int sockfd, const InetAddress &peerAddr)
     conn->setCloseCallback(
         std::bind(&TcpServer::removeConnection, this, std::placeholders::_1));
 
-    ioLoop->runInLoop(std::bind(&TcpConnection::connectEstablished, conn));
+    ioLoop->runInLoop(
+        std::bind(&TcpConnection::connectEstablished, conn));
 }
 
 void TcpServer::removeConnection(const TcpConnectionPtr &conn)
 {
-    loop_->runInLoop(std::bind(&TcpServer::removeConnectionInLoop, this, conn));
+    loop_->runInLoop(
+        std::bind(&TcpServer::removeConnectionInLoop, this, conn));
 }
 
 void TcpServer::removeConnectionInLoop(const TcpConnectionPtr &conn)
