@@ -28,3 +28,15 @@
 4. 在`Thread`中通过`C++lambda`表达式以及信号量机制保证线程创建时的有序性，只有当线程获取到了其自己的`tid`后，才算启动线程完毕
 5. `TcpConnection`继承自`enable_shared_from_this`，`TcpConnection`对象可以调用`shared_from_this()`方法给其内部回调函数，相当于创建了一个带引用计数的`shared_ptr`，可参考链接 [link](https://blog.csdn.net/gc348342215/article/details/123215888)，同时`muduo`通过`tie()`方式解决了`TcpConnection`对象生命周期先于`Channel`结束的情况
 6. `muduo`采用`Reactor`模型和多线程结合的方式，实现了高并发非阻塞网络库
+
+
+## 视频介绍
+
+* [muduo源码剖析(1)-简介](https://www.bilibili.com/video/BV1nu411Q7Gq)
+* [muduo源码剖析(2)-muduo编写回射服务器实例](https://www.bilibili.com/video/BV1CY411g7AE)
+* [muduo源码剖析(3)-Timestamp类日志类](https://www.bilibili.com/video/BV1dF411x7A8)
+* [muduo源码剖析(4)-Channel类](https://www.bilibili.com/video/BV14a411h7JW)
+* [muduo源码剖析(5)-Poller类、EPollPoller类等相关](https://www.bilibili.com/video/BV1VL4y1u714)
+* [muduo源码剖析(6)-EventLoop类介绍1](https://www.bilibili.com/video/BV1aY411g7As)
+
+持续更新..
