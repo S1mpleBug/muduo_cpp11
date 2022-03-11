@@ -42,5 +42,8 @@
 * [muduo源码剖析(8)-Thread类、EventLoopThread类](https://www.bilibili.com/video/BV1GL411P73C)
 * [muduo源码剖析(9)-EventLoopThreadPool类](https://www.bilibili.com/video/BV1yS4y1S7FY)
 * [muduo源码剖析(10)-InetAddress类、Socket类](https://www.bilibili.com/video/BV1UU4y1o7BT)
+* [muduo源码剖析(11)-Acceptor类1](https://www.bilibili.com/video/BV1q3411W79d)
+* [muduo源码剖析(12)-Acceptor类2](https://www.bilibili.com/video/BV1Ua411b7aV)
+
 
 持续更新..
