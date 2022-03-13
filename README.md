@@ -45,6 +45,7 @@
 * [muduo源码剖析(11)-Acceptor类1](https://www.bilibili.com/video/BV1q3411W79d)
 * [muduo源码剖析(12)-Acceptor类2](https://www.bilibili.com/video/BV1Ua411b7aV)
 * [muduo源码剖析(13)-TcpConnection类、Buffer类](https://www.bilibili.com/video/BV1hS4y137Eg)
+* [muduo源码剖析(14)-TcpConnection类、Buffer类2](https://www.bilibili.com/video/BV1PS4y1D74z)
 
 
 持续更新..
