@@ -83,8 +83,8 @@ private:
     void makeSpace(size_t len)
     {
         /**
-         * | kCheapPrepend |xxx|reader   | writer |                     // xxx标示reader中已读的部分
-         * | kCheapPrepend |            len            |
+         * | kCheapPrepend |xxx| reader | writer |                     // xxx标示reader中已读的部分
+         * | kCheapPrepend | reader ｜          len          |
          **/
         if (writableBytes() + prependableBytes() < len + kCheapPrepend) // 也就是说 len > xxx + writer的部分
         {
