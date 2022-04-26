@@ -75,7 +75,7 @@ private:
     void sendInLoop(const void *data, size_t len);
     void shutdownInLoop();
 
-    EventLoop *loop_; // 这里绝对不是baseLoop 因为TcpConnection都是subLoop里面管理的
+    EventLoop *loop_; // 这里是baseloop还是subloop由TcpServer中创建的线程数决定 若为多Reactor 该loop_指向subloop 若为单Reactor 该loop_指向baseloop
     const std::string name_;
     std::atomic_int state_;
     bool reading_;
