@@ -19,24 +19,25 @@ void Logger::setLogLevel(int level)
 // 写日志 [级别信息] time : msg
 void Logger::log(std::string msg)
 {
+    std::string pre = "";
     switch (logLevel_)
     {
     case INFO:
-        std::cout << "[INFO]";
+        pre = "[INFO]";
         break;
     case ERROR:
-        std::cout << "[ERRIR]";
+        pre = "[ERROR]";
         break;
     case FATAL:
-        std::cout << "[FATAL]";
+        pre = "[FATAL]";
         break;
     case DEBUG:
-        std::cout << "[DEBUG]";
+        pre = "[DEBUG]";
         break;
     default:
         break;
     }
 
     // 打印时间和msg
-    std::cout << Timestamp::now().toString() << " : " << msg << std::endl;
+    std::cout << pre + Timestamp::now().toString() << " : " << msg << std::endl;
 }
